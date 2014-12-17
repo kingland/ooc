@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head>
+
+
+  
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type"><title>Object Oriented C - ooc</title>
+  
+
+  
+  
+  <link rel="stylesheet" href="ooc.css" type="text/css">
+
+  
+  <meta name="description" content="ooc is an object oriented C programming method with macro based, pure ANSI-C toolset.">
+
+  
+  <meta name="keywords" content="ooc-coding Object Oriented C ANSI-C programming portable">
+
+ 
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+ 
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"></head><body>
+<table style="text-align: left; width: 100%;" border="0" cellpadding="6" cellspacing="0">
+
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; background-color: rgb(0, 51, 0); text-align: center;" margin-bottom="0" padding-bottom="0" colspan="3">
+      <h1 style="padding-top: 0pt; padding-bottom: 0pt;" class="colored">Object
+Oriented C - ooc</h1>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 270px; background-color: rgb(102, 204, 204); padding-top: 0pt; color: rgb(2, 3, 2);">
+      <h3>Not looking for this?</h3>
+	  <p>There are some other projects with similar names.</br><a href="#disambiguation">See them!</a></p>
+      <h3>Download</h3>
+      <p>Download latest source code and documentation from <a href="http://sourceforge.net/projects/ooc-coding/files/">sourceforge.net</a>.</p>
+      <h3>Tutorial</h3>
+      <p>Tutorial in downloadable <a href="docs/ooc.pdf">PDF</a>.</p>
+      <p><a target="_blank" href="docs/ooc.html/index.html">Online</a>
+tutorial.</p>
+      <h3>Documentation</h3>
+      <p><a target="_blank" href="docs/api/html/index.html">Online</a>
+documentation.</p>
+      <h3>Licensing</h3>
+      <p><strong>ooc</strong> is licensed under <a href="http://www.gnu.org/licenses/lgpl.html">LGPL 3</a>.<br>
+      </p>
+      <h3>Sourceforge.net</h3>
+      <p><strong>ooc</strong> <a href="http://sourceforge.net/projects/ooc-coding/">project page</a>.<br>
+      </p>
+      <p>Get <a href="http://sourceforge.net/projects/ooc-coding/forums/forum/1098079">help</a>.<br>
+      </p>
+      <h3>Contact</h3>
+      <p>If you've been lost, just contact me at <em>old-fashioned </em>(at)<em>
+users.sourceforge.net</em>.<br>
+      </p>
+      </td>
+      <td style="vertical-align: top; color: rgb(2, 3, 2);">
+      <p style="color: red; text-align: right;"><a href="http://ooc-lang.org/" target="_blank">ooc programmning language</a> is a different project!</p>
+      <p>Object Oriented C (<strong>ooc</strong>)
+kit is for those who want to program in an object orieneted manner, but
+stick on the good old C as well. ooc implements classes, single
+and multiple inheritance, exception handling. Ideal for students
+getting to know OO programming in pure C.<br>
+      </p>
+      <p>It can be mainly useful for education and for small systems
+that lack C++ compiler. Althoug I have written quite complex programs
+using <strong>ooc</strong>!<br>
+      </p>
+
+      <p>By the help of <strong>ooc</strong>
+you can write object oriented code in C with little efforts, though you
+must understand the underlying object model.<br>
+      </p>
+      <p>Creating <strong>ooc</strong> my main
+goal was to develop a lightweight object model, that provides many
+features of C++ but is pure ANSI-C. Thus this is highly portable even
+for small embedded systems as well. On other hand it was kind a "proof
+of concept" and a hobby.<br>
+      </p>
+      <p style="color: red;"><strong>ooc</strong> is mature enough to
+be ported onto small microcontrollers, PICs, or DSPs.</p>
+      <p style="color: red; text-align: center;"><img style="width: 64px; height: 64px;" alt="ooc logo" title="Happy ooc coding!" src="logo64px.png"></p>
+      <p style="color: red; text-align: center;"><span style="font-weight: bold; color: black;">ooc</span><span style="color: black;"> is like giving a good old steam locomotion a new life! :-)</span><br>
+      </p>
+
+      <p style="color: black;"> </p>
+      <h2>Features</h2>
+      <ul>
+        <li>Uses only C macros and functions, no language extensions
+required! (ANSI-C)</li>
+        <li>Easy to read source code for your application. Care was
+taken to make things as simple as possible.</li>
+        <li>Single inheritance of classes</li>
+        <li>Multiple inheritance by interfaces and mixins (since
+version 1.3)<br>
+        </li>
+        <li>Implementing exceptions (in pure C!)</li>
+        <li>Virtual functions for classes</li>
+        <li>External tool for easy class implementation</li>
+      </ul>
+     <h2>Comparison</h2>
+      <p>There are some other object models in C as weel. They may be
+worth a try. The mostly known is <a href="http://en.wikipedia.org/wiki/GObject" target="_blank">GObject</a>,
+that is a very sophisticated system, but requires lot of typing, and
+subclassing is labor-intensive.</p>
+      <p>A short comparison table may help understand the key
+differences:</p>
+      <table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <th style="width: 40%;">Feature<br>
+            </th>
+            <th style="width: 20%; text-align: center; vertical-align: middle;">ooc<br>
+            </th>
+            <th style="width: 20px; vertical-align: middle; text-align: center;">GObject<br>
+            </th>
+            <th style="width: 20%; text-align: center; vertical-align: middle;">C++<br>
+            </th>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Class inheritance<br>
+            </td>
+            <td style="text-align: center;">+<br>
+            </td>
+            <td style="text-align: center;">+<br>
+            </td>
+            <td style="text-align: center;">+<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Multiple inheritance:
+interfaces<br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Multiple inheritance:
+mixins<br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Run-time type safety<br>
+            </td>
+            <td style="text-align: center;">+<br>
+            </td>
+            <td style="text-align: center;">+<br>
+            </td>
+            <td style="text-align: center;">(optional)<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Exception handling<br>
+            </td>
+            <td style="text-align: center;">+<br>
+try ... catch .. finally<br>
+            </td>
+            <td style="text-align: center;"><br>
+            </td>
+            <td style="text-align: center;">+<br>
+try ... catch<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Managed pointers<br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+ooc_manage, ooc_pass<br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+std::auto_ptr&lt;&gt;()<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Operator overloading<br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Function / method
+overloading<br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Properties <br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">Compile time private /
+protected / public check<br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">so-so<br>
+            </td>
+            <td style="vertical-align: top;"><br>
+            </td>
+            <td style="vertical-align: top; text-align: center;">+<br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;"><em></em>Broad range of
+containers, utilities<br>
+            </td>
+            <td style="text-align: center;">lacks many :-(<br>
+but Glib can be used!<br>
+            </td>
+            <td style="text-align: center;">many (Glib)<br>
+            </td>
+            <td style="text-align: center;">many (STL, Boost)<br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <h2>Currently supported compilers / platforms</h2>
+      <ul>
+        <li>GNU GCC 4.x on Linux (with automake tools as well)</li>
+        <li>Microsoft Visual C++ 2008 (Express edition as well)</li>
+        <li>MPLAB C18 for the Microchip 8 bit PIC families (runs on
+windows)</li>
+        <li>MPLAB C30 for the Microchip 16 bit PIC families (runs on
+windows)</li>
+        <li>MPLAB C32 port for the Microchip 32 bit PIC families (runs
+on windows)</li>
+      </ul>
+      <h2>Development roadmap</h2>
+The following features are planned to be implemented in the near future:<br>
+      <ul>
+        <li>some speed and space optimizations in the core libraries</li>
+        <li>more containers (singly linked list, fifo, stack, trees)<br>
+        </li>
+      </ul>
+      <a id="disambiguation"></a> 
+      <h2>Projects with similar names</h2>
+        <p>THIS ooc is a <strong>set of C macro collection and a small C library</strong>!<br>Unfortunately shares the name with some other projects of similar purpose.</br>Shall you be interested in those, you can find them here:
+        </p>
+      <table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+        <tbody>
+          <tr>
+            <td style="vertical-align: top;">ooc programming language<br>
+(that is a LANGUAGE and a compiler called rock)<br>
+            </td>
+            <td style="vertical-align: top; text-align: center;"><a href="http://ooc-lang.org/" target="_blank">http://ooc-lang.org/</a><br>
+            </td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;">A good book introducing the concept and the related ooc C PREPOCESSOR<br>
+            </td>
+            <td style="vertical-align: top; text-align: center;"><a href="http://www.cs.rit.edu/%7Eats/books/ooc.pdf" target="_blank">www.cs.rit.edu/~ats/books/ooc.pdf</a><br>
+            <a href="http://www.cs.rit.edu/%7Eats/books/ooc-02.01.04.tar.gz">www.cs.rit.edu/~ats/books/ooc-02.01.04.tar.gz</a><br>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p><em>Happy ooc-coding!<br>
+      </em></p>
+      <div style="text-align: right;"><em><a title="Document made with KompoZer" href="http://kompozer.net/"><img alt="Document made with KompoZer" src="http://kompozer.sourceforge.net/images/kompozer_80x15.png" border="0"></a></em><br>
+      <em></em></div>
+      </td>
+      <td style="vertical-align: top; width: 15%; background-color: rgb(102, 204, 204);">
+      <h3>Latest</h3>
+2012. 01. 09.<br>
+      <ul>
+        <li><span style="color: rgb(204, 0, 0);">Introducing multiple
+inheritance:</span></li>
+        <ul>
+          <li><span style="color: rgb(204, 0, 0);">interfaces</span></li>
+          <li><span style="color: rgb(204, 0, 0);">mixins</span></li>
+        </ul>
+      </ul>
+      <span style="color: rgb(204, 0, 0);"></span><br>
+2011. 08. 10.<br>
+      <ul style="color: black;">
+        <li>MPLAB C32 port</li>
+      </ul>
+2011. 08. 06.<br>
+      <ul style="color: black;">
+        <li>MPLAB C30 port</li>
+      </ul>
+2011. 08. 02.<br>
+ooc is listed on <a href="http://www.softpedia.com/progClean/Object-Oriented-C-Clean-193487.html" target="_blank">Softpedia</a>.<br>
+      <br>
+2011. 07. 31.<br>
+Version 1.1 is available:<br>
+      <ul>
+        <li><span style="color: black;">MPLAB C18 port</span><br>
+        </li>
+      </ul>
+2011. 04. 17<br>
+Version 1.0 is available:<br>
+      <ul>
+        <li>Licensing changed to LGPL v3</li>
+        <li>Support for Unit testing<br>
+        </li>
+      </ul>
+2010. 06. 19<br>
+Version 0.9.g is available:<br>
+      <ul>
+        <li>Multithreading support</li>
+        <li>Easier porting<br>
+        </li>
+      </ul>
+2010. 05. 12<br>
+Version 0.9.f is available.<br>
+      <br>
+Version 0.9.e is available.<br>
+      <br>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+
+<br>
+
+</body></html>

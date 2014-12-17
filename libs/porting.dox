@@ -1,0 +1,378 @@
+/**
+
+@page porting Porting ooc.
+
+The ooc was designed to be easily portable. Creating ooc the main goal was to establish an
+OOP environment that is easily portable onto special systems as well, like small microcumputers,
+microcontrollers and DSPs that has at least an ANSI compatible C compiler. \n
+
+@section headers Porting headers.
+All portability issues are collected into separated header files, that I call porting headers.
+Each port has its own porting header in the directory named @e libs/port in the source tree, and 
+@e include/ooc/port in the installed system.
+@note	Modifying any of the porting headers you must rebuild and reinstall ooc! Modifying 
+		porting headers on an installed system may not behave as required!
+		
+In the main header file (@c ooc.h) there is an include tree, that decides which porting header
+should be included.\n
+Currently the following porting headers are available:
+<TABLE>
+<TR>
+	<TD>Porting header</TD>
+	<TD>Description</TD>
+</TR>
+<TR>
+	<TD>anyc.h</TD>
+	<TD>Uses ANSI-C only, should be able to be compiled by any C compiler. \n
+	There is no multithreading support in this port!</TD>
+</TR>
+<TR>
+	<TD>gnuc.h</TD>
+	<TD>Linux 32 bit x86 port with GNU GCC compilation. \n
+	Pthread or OpenMP multithreading is supported as well as single threading.</TD>
+</TR>
+<TR>
+	<TD>msvc.h</TD>
+	<TD>Microsoft Windows 32 bit x86 port with MS Visual C++ compilation. \n
+	Windows threads and OpenMP multithreading is supported as well as single threading.</TD>
+</TR>
+<TR>
+	<TD>mcc18.h</TD>
+	<TD>MPLAB C18 compiler support for 8 bit Microchip controllers. \n
+	There is no dynamic memory allocation and multithreading support in this port.\n
+	Supports the large data + large code configuration only.</TD>
+</TR>
+<TR>
+	<TD>mcc30.h</TD>
+	<TD>MPLAB C30 compiler support for 16 bit Microchip controllers. \n
+	There is no multithreading support in this port.</TD>
+</TR>
+<TR>
+	<TD>mcc32.h</TD>
+	<TD>MPLAB C32 compiler support for 32 bit Microchip controllers. \n
+	There is no multithreading support in this port.</TD>
+</TR>
+</TABLE>
+
+For special comments on the existing ports see the following descriptions:
+- @subpage port_notes_mcc18
+- @subpage port_notes_mcc30
+- @subpage port_notes_mcc32
+
+@section new_port How to create a new port?
+To create a new port you must do the followings:
+	-#	Create a porting header file in the @e libs/port directory in the source tree.\n
+		The content of the porting header file is described in the next section.
+	-#	Modify the include tree at the beginning of the main header file (ooc.h) to
+		include your porting header properly.
+	-#	Build and install ooc.
+	
+@section port_header_parts What must contain a porting header?
+When you create a new porting header it is advisable to start out from the closest 
+existing header, worst case from @c anyc.h. Copy it into the @e libs/port directory 
+with a new name. \n
+The porting header must contain the followings parts:
+
+@dontinclude ./port/anyc.h
+
+@subsection port_stdlib Include the standard libraries.
+Include the necessary standard libraries in your system. See @ref port_stdc "standard includes" for details.
+
+@skip	standard
+@until	endif
+
+@note If your system does not support these standard headers or functions, you must implement them,
+and modify this section accordingly.
+
+@subsection port_setjmp Longjump primitives.
+Longjump primitives are used for exception handling. You must define how your system handles
+longjumps, or you must implement a longjump mechanism on your own. \n
+
+@skip Longjump
+@until LONGJMP
+
+@note on some systems the signaling must be considered as well! (sigsetjmp, siglongjmp)
+
+@subsection port_inline Inline control.
+If your compiler allows, you can set some functions inline for better performance. To achive this
+define the @c STIN macro as the prefix for static inline functions, and undefine NO_INLINE macro. \n
+If your compiler does not support function inlining, leave this section as follows.
+
+@skip inline
+@until NO_INLINE
+
+@subsection port_locks Threading primitives.
+You must define the threading primitives for the given port. \n
+Define the appropriate prefix for thread local storage variables, or leave the @c TLS macro as follows:
+
+@skip Threadless
+@until TLS
+
+Define the mutex and locking primitives for the current system. For a threadless implementation
+this looks like:
+
+@skip	ooc_Mutex
+@until	ooc_try_lock
+
+@see @ref page_MT
+
+@subsection port_xchg Atomic pointer exchange.
+Define an atomic pointer exchange (read while nulling) operation as a macro called @c OOC_IMPLEMENT_PTR_READ_AND_NULL. 
+This is very important for threadsafe pointer manipulation.
+It is used for nulling a pointer while reading its content into a temporary variable. \n
+If your implementation is threadless, this operatin must be reentrance safe. The reentrance safe default implementation is
+the following:
+
+@skip COMPILING_OOC_C
+@until endif
+
+@note The @c COMPILING_OOC_C macro ensures, that this definition is available in the ooc core implementation only.
+
+@section compiler_control What compiler controls do I have?
+You can use several macros that alter the behavior of the code according to the actual needs of your port.
+
+<TABLE>
+<TR>
+	<TD>Macro name</TD>
+	<TD>Behavior</TD>
+</TR>
+<TR>
+	<TD>ROM</TD>
+	<TD>In case of a microcontroller, the @c const data could be located in Read Only Memory.\n
+	For those targets define @c ROM macro as the appropriate storage specifier.\n
+	@c ROM is used when dereferencing a ROM based variable. For allocation purposes see the @c ROM_ALLOC macro!
+	If not specified it is defined automatically as: @code #define ROM const @endcode
+	</TD>
+</TR>
+<TR>
+	<TD>ROM_ALLOC</TD>
+	<TD>In case of a microcontroller, the @c const data could be located in Read Only Memory.\n
+	Define the @c ROM_ALLOC macro as it is required for allocating a variable in the read only memory.\n
+	@c ROM_ALLOC is used only for the allocation of a ROM based variable. For other purposes see the @c ROM macro!
+	If not specified it is defined automatically as: @code #define ROM_ALLOC ROM @endcode
+	</TD>
+</TR>
+<TR>
+	<TD>GEN_PTR</TD>
+	<TD>General pointer type for memory and string manipulation libraries (<mem.h>, <string.h>).\n
+	In ANSI-C the general pointer type in theese standard libraries is @c char*. \n
+	However e.g MPLAB C18 uses @c void* in these libraries, causing compiler warnings.\n
+	Define GEN_PTR according to your actual target's needs.\n
+	If not specified it is defined automatically as: @code #define GEN_PTR char * @endcode
+	</TD>
+</TR>
+<TR>
+	<TD>NO_RELATIVE_INCLUDE</TD>
+	<TD>Most compiler treats the @c include path relative to the actual file invoking the @c include
+	command for local includes, regardless if it is a source or a header file.\n
+	Some others always use the source file location as the base path for all local includes (e.g. MPLAB C18).\n
+	This macro is not defined normally, define it if your compiler requires.
+	</TD>
+</TR>
+<TR>
+	<TD>NDEBUG</TD>
+	<TD>The usual way to distinguish between debug and release versions is defining the @c NDEBUG macro for the release version.
+	Ooc uses this approach internally. However some compilers or IDEs use other macros for this purpose.\n
+	Define @c NDEBUG macro according to your compiler / IDE, letting ooc be consistent.
+	</TD>
+</TR>
+<TR>
+	<TD>OOC_NO_THREADS</TD>
+	<TD>If defined then a single threaded version is built.\n
+	You must define dummy threading primitives in case of a single threaded version, as well! See @ref port_locks
+	</TD>
+</TR>
+<TR>
+	<TD>NO_INLINE</TD>
+	<TD>If defined then it indicates that the comlpiler does not support function inlining.\n
+	See @ref port_inline
+	</TD>
+</TR>
+<TR>
+	<TD>OOC_NO_DYNAMIC_MEM</TD>
+	<TD>On some microcontroller targets the dynamic memory allocation is not available. On those targets every @c Object must be
+	statically allocated, and thus the ooc_new() and ooc_delete() is nonsence. \n
+	Defining @c OOC_NO_DYNAMIC_MEM ooc is compiled without the need for dynamic memory handling, and thus has some limitations as well:
+	any function related to dynamic memories is unavailable.
+	</TD>
+</TR>
+<TR>
+	<TD>OOC_NO_FINALIZE</TD>
+	<TD>On microcontroller targets there is usually no normal shutdown or program exit: those programs are running continuously and never exit.
+	In such environments the class finalization is more than meaningless: defining this macro will save three pointers per class definitions and 
+	remove the ooc_finalize_class() and ooc_finalize_all() functions from the build.
+	(A good optimizing compiler should remove your class finalizing routines as well, since they are never reached.)
+	</TD>
+</TR>
+<TR>
+	<TD>_OOC_VTAB_INITIALIZER</TD>
+	<TD>On some microcontroller targets it is important to place the virtual table into the initialized data section.
+	We van force this behaviour by defining this macro. (Se mcc18.h port file!)\n
+	Although ANSI-C says that all uninitialized data is set to 0 at program start, this macro could be necessary on small microcomputers,
+	since they do not clean their uninitialized data section at start up or restrat.
+	</TD>
+</TR>
+<TR>
+	<TD>OOC_HAS_UNIX_SIGNALS</TD>
+	<TD>The TestCase class converts some Unix signals (SIGSEGV, SIGFPE) into ooc Exceptions letting us to do unit test checks way much easier.
+	This macro indicates that there are unix signals implemented in the operation system.
+	</TD>
+</TR>
+
+</TABLE>
+
+@section port_stdc Requirements against the standard C library.
+The standard C library on the host must support the following minimal set compatible with 
+ANSI-C:\n
+The following headers must be available:
+	- stddef.h (for size_t )
+	- string.h (for memcpy() )
+	- stdlib.h (for the functions below )
+	- assert.h (for the assert macro )
+	- setjmp.h (for jmp_buf, setjmp, longjmp or equivalents)
+
+The following memory handling functions must be available:
+	- void * malloc( size_t size )
+	- void * calloc( size_t num, size_t size )
+	- void * realloc( void *ptr, size_t size )
+	- void   free( const void * mem )
+	- void   memcpy( void * dest, const void * src, size_t size )
+	- void   memmove( void * dest, const void * src, size_t size )
+	- void   memset( void * dest, int c, size_t size )
+	- void   abort( void )
+	
+(This is not an extra requirement :-) If your host does not support these functions
+then you must implement them.)
+
+//=============================================================================================================================================
+
+@page port_notes_mcc18 Notes on the MPLAB C18 port
+
+The main issue with the MPLAB C18 compiler and development toolchain is that it lacks the dynamic memory handling (malloc() and others).
+Due to this limitations you can not use the ooc_new() and similar functions for creating your Objects. Instead you must allocate your Objects statically
+and populate them with the ooc_use() and similar constructors. The same applies for the deletion of an Object: you can not delete it, just ooc_release(),
+wich destruct the Object properly, but does not free the memory location since it was allocated statically.\n
+\n
+Exception handling works fine. Since exception_new() returns a statically pre-allocated Exception object, it is available in this port too,
+so feel free to use exception_new(), it is no problem.\n
+\n
+The ooc libraries support only the Large data / Large code model! Always compile your project with these settings ("-mL" compiler otion)!
+\n
+The following compiler controls are defined for MPLAB C18:
+	- ROM
+	- GEN_PTR
+	- NO_RELATIVE_INCLUDE
+	- OOC_NO_THREADS
+	- NO_INLINE
+	- OOC_NO_DYNAMIC_MEM
+	- OOC_NO_FINALIZE
+	- _OOC_VTAB_INITIALIZER
+
+The following classes are proted to the MPLAB C18:
+
+<TABLE>
+<TR>
+	<TD>Class</TD>
+	<TD>Comment</TD>
+</TR>
+<TR>
+	<TD>ooc.h</TD>
+	<TD>No dynamic memory handling</TD>
+</TR>
+<TR>
+	<TD>exception.h</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>refcounted.h</TD>
+	<TD></TD>
+</TR>
+<TR>
+	<TD>vector.h</TD>
+	<TD>No dynamic memroy handling. Use vector_use_with_store() to allocate a Vector.</TD>
+</TR>
+<TR>
+	<TD>list.h</TD>
+	<TD>No dynamic memroy handling. As a consequence, List can hold only Objects the are subclasses of ListNode!
+	Use list_use_of_nodes() to allocate a List.</TD>
+</TR>
+<TR>
+	<TD>testcase.h</TD>
+	<TD>No dynamic memroy handling.</TD>
+</TR>
+</TABLE>
+
+The ooc/signal.h class is not ported to the MPLAB C18 platform, since it uses dynamic memory handling internally.\n
+\n
+Since the MPLAB C18 compiler is available on Windows only, this port is distributed in the Windows installer package only.
+\n
+@note	There is a silly bug in the MPLAB C18 compiler: if you define the members of two classes in sequence, then the typedef for the first
+	object struct is forgotten by the compiler. :-( You must typedef it again by yourself, but this would hurt other compilers.\n
+	The workaround is:\n
+	@code
+		DeclareClass( First, Base );
+		DeclareClass( Second, Base )
+
+		#ifdef __18CXX
+		typedef struct FirstObject * First;
+		#endif
+	@endcode
+	
+	
+@note	The libraries are built with the Lite version of the MPLAB C18 compiler, so they are not optimized!
+		For real live projects build your own ooc libraries with optimization (with the Enterprise or Pro editions)!
+	
+//=============================================================================================================================================
+
+@page port_notes_mcc30 Notes on the MPLAB C30 port
+
+There are not too much comments for the MPLAB C30 compiler and development toolchain, it is a fully functional port. ;-)
+
+Every functionality works fine in this port.\n
+
+The ooc libraries supports only the default memory model!
+\n
+The following compiler controls are defined for MCC30:
+	- ROM
+	- ROM_ALLOC
+	- OOC_NO_THREADS
+	- OOC_NO_FINALIZE
+
+All ooc classes are proted to the MCC30.\n
+Comment on TestCase: for some mistery reason, the Unix signals (SIGSEGV, SIGFPE) do not work, as expected, so TestCase does not use them.
+I the future it would be great to integrate the PIC traps as well into the TestCase.\n
+
+Since the MPLAB C30 compiler is available on Windows only, this port is distributed in the Windows installer package only.
+
+@note	The libraries are built with the Lite version of the MPLAB C30 compiler, so they are not optimized!
+		For real live projects build your own ooc libraries with optimization (with the Enterprise or Pro editions)!
+
+//=============================================================================================================================================
+
+@page port_notes_mcc32 Notes on the MPLAB C32 port
+
+There are not too much comments for the MPLAB C32 compiler and development toolchain, it is a fully functional port. ;-)
+
+Every functionality works fine in this port.\n
+
+The following compiler controls are defined for MCC32:
+	- ROM
+	- OOC_NO_THREADS
+	- OOC_NO_FINALIZE
+
+All ooc classes are proted to the MCC32.\n
+Comment on TestCase: for some mistery reason, the Unix signals (SIGSEGV, SIGFPE) do not work, as expected, so TestCase does not use them.
+I the future it would be great to integrate the PIC traps as well into the TestCase.\n
+
+Since the MPLAB C32 compiler is available on Windows only, this port is distributed in the Windows installer package only.\n
+
+@warning	You can't use the MPLAB SIM simulator for running PIC32 TestCases unless you compile your test cases together with the provided 
+			@c mplabSIMc32Ext.c extension file, that is located in the @c template/unit directory!
+
+The MPLAB C32 library uses the UART2 as default for @c stdout, so all the @c printf() calls will put their output to UART2. Unfortunatly MPLAB
+SIM can catch and display only UART1 outputs, so it is necessary to redirect all @c printf() outputs to UART1 in the testcases.
+Compiling and linking your testcase together with mplabSIMc32Ext.c will do this job for you.
+
+@note	The libraries are built with the Lite version of the MPLAB C32 compiler, so they are not optimized!
+		For real live projects build your own ooc libraries with optimization (with the Enterprise or Pro editions)!
+*/

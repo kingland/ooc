@@ -1,0 +1,136 @@
+# 
+# Builds all MPLAB libraries
+# 
+# Makefile for Microsoft nmake
+#
+# use: > nmake [target] /f NMakefile.MPLAB
+#
+# target can be all or clean
+#
+##################################################
+
+MCC18_SOURCES = ooc.c exception.c refcounted.c vector.c list.c testcase.c mcc18_ext.c
+
+MCC30_SOURCES = ooc.c exception.c refcounted.c vector.c list.c testcase.c signal.c mcc30_ext.c
+
+MCC32_SOURCES = ooc.c exception.c refcounted.c vector.c list.c testcase.c signal.c
+
+###################################################
+
+all : ODIRS ooc_mcc18.lib ooc_mcc18_d.lib ooc_mcc30_d.a ooc_mcc30.a ooc_mcc32.a ooc_mcc32_d.a
+
+##################################################
+
+CC18 = mcc18.exe
+CC30 = pic30-gcc.exe
+CC32 = pic32-gcc.exe
+
+AR18 = mplib.exe
+AR30 = pic30-ar.exe
+AR32 = pic32-ar.exe
+
+####################################################
+
+MCC18_ODIR = mcc18
+_MCC18_OBJECTS = $(MCC18_SOURCES:.c=.o)
+MCC18_OBJECTS = mcc18\$(_MCC18_OBJECTS: = mcc18\)
+
+CC18_FLAGS = -p=18cxx /i"C:\Program Files\Microchip\mplabc18\v3.37.01\h" -mL
+
+ooc_mcc18.lib : $(MCC18_OBJECTS)
+	$(AR18) /c $@ $**
+
+{}.c{$(MCC18_ODIR)\}.o :
+	$(CC18) $(CC18_FLAGS) $< -fo=$@
+
+####################################################
+
+MCC18_ODIR_D = mcc18_d
+_MCC18_OBJECTS_D = $(MCC18_SOURCES:.c=.o)
+MCC18_OBJECTS_D = mcc18_d\$(_MCC18_OBJECTS_D: = mcc18_d\)
+
+CC18_FLAGS_D = -p=18cxx /i"C:\Program Files\Microchip\mplabc18\v3.37.01\h" -D__DEBUG -mL -Ou- -Ot- -Ob- -Op- -Or- -Od- -Opa-
+
+ooc_mcc18_d.lib : $(MCC18_OBJECTS_D)
+	$(AR18) /c $@ $**
+
+{}.c{$(MCC18_ODIR_D)\}.o :
+	$(CC18) $(CC18_FLAGS_D) $< -fo=$@
+
+####################################################
+
+MCC30_ODIR_D = mcc30_d
+_MCC30_OBJECTS_D = $(MCC30_SOURCES:.c=.o)
+MCC30_OBJECTS_D = mcc30_d\$(_MCC30_OBJECTS_D: = mcc30_d\)
+
+CC30_FLAGS_D = -mcpu=generic-16bit -x c -c -D__DEBUG -g -ansi -Wall -pedantic
+
+ooc_mcc30_d.a : $(MCC30_OBJECTS_D)
+	$(AR30) r $@ $**
+
+{}.c{$(MCC30_ODIR_D)\}.o :
+	$(CC30) $(CC30_FLAGS_D) $< -o $@
+
+####################################################
+
+MCC30_ODIR = mcc30
+_MCC30_OBJECTS = $(MCC30_SOURCES:.c=.o)
+MCC30_OBJECTS = mcc30\$(_MCC30_OBJECTS: = mcc30\)
+
+CC30_FLAGS = -mcpu=generic-16bit -x c -c -ansi -Wall -pedantic -Os 
+
+ooc_mcc30.a : $(MCC30_OBJECTS)
+	$(AR30) r $@ $**
+
+{}.c{$(MCC30_ODIR)\}.o :
+	$(CC30) $(CC30_FLAGS) $< -o $@
+
+####################################################
+
+MCC32_ODIR_D = mcc32_d
+_MCC32_OBJECTS_D = $(MCC32_SOURCES:.c=.o)
+MCC32_OBJECTS_D = mcc32_d\$(_MCC32_OBJECTS_D: = mcc32_d\)
+
+CC32_FLAGS_D = -x c -c -D__DEBUG -g -ansi -Wall -pedantic
+
+ooc_mcc32_d.a : $(MCC32_OBJECTS_D)
+	$(AR32) r $@ $**
+
+{}.c{$(MCC32_ODIR_D)\}.o :
+	$(CC32) $(CC32_FLAGS_D) $< -o $@
+
+####################################################
+
+MCC32_ODIR = mcc32
+_MCC32_OBJECTS = $(MCC32_SOURCES:.c=.o)
+MCC32_OBJECTS = mcc32\$(_MCC32_OBJECTS: = mcc32\)
+
+CC32_FLAGS = -x c -c -ffunction-sections -ansi -Wall -pedantic -Os 
+
+ooc_mcc32.a : $(MCC32_OBJECTS)
+	$(AR32) r $@ $**
+
+{}.c{$(MCC32_ODIR)\}.o :
+	$(CC32) $(CC32_FLAGS) $< -o $@
+
+####################################################
+
+clean :
+	-rmdir $(MCC18_ODIR_D) /S /Q
+	-rmdir $(MCC18_ODIR) /S /Q
+	-rmdir $(MCC30_ODIR_D) /S /Q
+	-rmdir $(MCC30_ODIR) /S /Q
+	-rmdir $(MCC32_ODIR_D) /S /Q
+	-rmdir $(MCC32_ODIR) /S /Q
+
+	-del ooc_mc*.lib
+
+#####################################################
+
+ODIRS :
+	-mkdir $(MCC18_ODIR_D)
+	-mkdir $(MCC18_ODIR)
+	-mkdir $(MCC30_ODIR_D)
+	-mkdir $(MCC30_ODIR)
+	-mkdir $(MCC32_ODIR_D)
+	-mkdir $(MCC32_ODIR)

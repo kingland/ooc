@@ -1,0 +1,11 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib/ooc
+includedir=${prefix}/include/ooc
+
+Name: ooc
+Description: Object oriented C library.
+Requires:
+Version: 1.3a
+Libs: -L${libdir} -looc
+Cflags: -I${includedir}

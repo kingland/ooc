@@ -1,0 +1,183 @@
+
+/**
+@file
+Multithreading support.
+Multithreading primitives that can be used writing ooc core and ooc extensions (e.g. new containers, etc.)
+Don't use these in your own code!
+Use the platform native threading or some generalized one (e.g. OpenMP) instead.
+*/
+
+/**
+@page page_MT Multithreading support.
+
+The ooc library has multithreaded and a single threaded versions. \n
+The single threaded versions does not include any trheading support,
+so it is faster if you do not need using threads. \n
+The multithreaded libraries are built on the native threading mechanism
+of the platform.
+@section Libs Libraries.
+The following libraries are generated:
+<TABLE>
+<TR>
+	<TD>Library name</TD>
+	<TD>Description</TD>
+</TR>
+<TR>
+	<TD>libooc.a</TD>
+	<TD>Multithreaded release version</TD>
+</TR>
+<TR>
+	<TD>libooc_st.a</TD>
+	<TD>Singlethreaded release version</TD>
+</TR>
+<TR>
+	<TD>libooc_d.a</TD>
+	<TD>Multithreaded debug version</TD>
+</TR>
+<TR>
+	<TD>libooc_st_d.a</TD>
+	<TD>Singlethreaded debug version</TD>
+</TR>
+</TABLE>
+@warning You must take care linking against the right library, 
+because there is no mechanism preventing wrong linkeage!
+All symbols can be found in each libraries.
+
+@section LinkFlags Linking against ooc libraries.
+To link against the right ooc libraries you must use the following linker options.
+<TABLE>
+<TR>
+	<TD>Library name</TD>
+	<TD>GCC Linker flags</TD>
+	<TD>VC++ Linker flags</TD>
+</TR>
+<TR>
+	<TD>libooc</TD>
+	<TD>-pthread or\n -fopenmp</TD>
+	<TD>/MT or /MD</TD>	
+</TR>
+<TR>
+	<TD>libooc_st</TD>
+	<TD>-</TD>
+	<TD>/MT or /MD\n(/ML is depreciated)</TD>	
+</TR>
+<TR>
+	<TD>libooc_d</TD>
+	<TD>-g3 \n-pthread or -fopenmp</TD>
+	<TD>/MTd or /MDd</TD>	
+</TR>
+<TR>
+	<TD>libooc_st_d</TD>
+	<TD>-</TD>
+	<TD>/MTd or /MDd\n(/MLd is depreciated)</TD>	
+</TR>
+</TABLE>
+
+@section CompileOOC Compiling the ooc library.
+@warning This section is useful only if you want to compile the 
+ooc libraries without the supplied autotools or project files.
+For compiling the ooc libraries you should use the following 
+settings and predefined macros. (e.g. when you compile your code
+with the ooc sorce code together)
+
+<TABLE>
+<TR>
+	<TD>Version</TD>
+	<TD>GCC flags</TD>
+	<TD>VC++ flags</TD>
+</TR>
+<TR>
+	<TD>Multithreaded version</TD>
+	<TD>-pthread</TD>
+	<TD></TD>	
+</TR>
+<TR>
+	<TD>Singlethreaded version</TD>
+	<TD>-DNO_THREADS</TD>
+	<TD>NO_THREADS</TD>	
+</TR>
+<TR>
+	<TD>Debug version</TD>
+	<TD>-O0 -g3</TD>
+	<TD></TD>	
+</TR>
+<TR>
+	<TD>Release version</TD>
+	<TD>-DNDEBUG -O2 -g0</TD>
+	<TD>NDEBUG</TD>	
+</TR>
+</TABLE>
+Mix the flags as needed!
+
+@section thread_prims Threading primitives in ooc.
+@warning 	You should use the ooc threading primitives only for the development of the ooc itself!
+			For example modifying the core or adding new container classes, etc.
+ooc defines some threading primitives that should be used in the ooc code itself. These are limited to the 
+locking / unlocking mutexes. Forking and thread creation is not part of the ooc system, you should use
+it in your own code with the native threading libraries or with a generalized solution (e.g. OpenMP).
+
+The following threading primitives are available:
+
+@see @ref thread_prims_defs
+
+*/
+
+#define TLS static
+
+#define	ooc_Mutex				void
+#define ooc_mutex_init( x )
+#define ooc_mutex_release( x )
+#define ooc_lock( x )	
+#define ooc_unlock( x )
+#define ooc_try_lock( x )		TRUE 
+
+
+/** @section thread_prims_defs Threading primitive definitions.
+
+@def	ooc_Mutex
+@brief Mutex.
+Allocates a mutex.
+@hideinitializer
+
+@def	ooc_mutex_init( x )
+Initializes the mutex. Mutexes must be initialized before use.
+@param	x	The mutex to be initialized.
+@hideinitializer
+
+@def	ooc_mutex_release( x )
+Releases the mutex. Mutexes must be released after use. \n
+Releasing a mutex locked by an other thread is an error, the behavior is implementation dependent.
+@param	x	The mutex to be released.
+@hideinitializer
+
+@def	ooc_lock( x )
+Locks the mutex. Mutex must be initialized already! \n
+@param	x	The mutex to be locked.
+@warning Nested lock is not allowed!
+@hideinitializer
+
+@def	ooc_unlock( x )
+Unlocks the mutex. Mutex must be initialized already and must be locked by the thread! \n
+@param	x	The mutex to be unlocked.
+@warning Nested lock is not allowed!
+@hideinitializer
+
+@def	ooc_try_lock( x )
+Tries to lock the mutex. Mutex must be initialized already! \n
+@param	x	The mutex to be locked.
+@return TRUE is the mutex could be locked by the thread, FALSE otherwise.
+@warning Nested lock is not allowed!
+@hideinitializer
+
+@def	TLS
+Thread Local Storage.
+Must be defined as a static or global variable. This is a type qualifier, binds left to right.
+@code
+TLS int MyVariable;
+@endcode
+@hideinitializer
+
+*/
+
+
+

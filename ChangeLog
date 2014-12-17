@@ -1,0 +1,74 @@
+1.3a
+Portable to 64 bit Linux versions (source can be compiled, still no 64bit libraries distributed)
+Valgrind check is skipped in make check, if Valgrind is not installed.
+New functions in TestCase: testcase_run_test().
+New functions in List: list_get_type(), list_get_managed().
+New functions in vector: vector_get_type(), vector_get_managed().
+
+1.3a
+Correcting atomic operators for 64 bit Linux and Windows systems
+
+1.3
+Introducing Interfaces, a Java style way of multiple inheritance.
+Introducing Mixins, a way of multiple inheritance.
+
+1.2a
+MPLAB C32 port, and unit tests.
+
+1.2
+MPLAB C30 port, and unit tests.
+
+1.1
+Manual for unit testing and API doc for TestCase.
+MPLAB C18 port, and unit tests for it.
+
+1.0
+Unit testing support
+More precise tests for the ooc libraries
+(on Linux use: make check)
+Licensing changed to LGPL v3.
+
+0.9.g
+Separate header files for each compilers / ports. Makes porting ooc much easier.
+Multithreading support.
+Threadsafe ooc core, Vector, List and Signal.
+Syntax has been changed for list_swap() method (required by proper multithread support)
+Improved docs (porting, multithreading)
+
+0.9.f
+Implementation of managed pointers was not ANSI-C compliant. :-(
+Reworked, now it is in line with ANSI-C, and can be compiled with VC++ as well.
+(And should be able to be compiled with many compilers ...)
+
+0.9.e
+Bugfix with nested managed pointers (unique name for each Manageables).
+To prevent possible name conflicts with other include files, templates are modified (adding ooc/ prefix).
+New test for managed pointers.
+
+
+0.9.d
+It is allowed to throw an Exception in a catch() block.
+Adding ooc_manage_object() method
+Improved performance in ooc core (use of managed pointers instead of try...catch)
+Modified ooc_cast(), ooc_check_cast();
+Multi-target automake: libooc.a for release and libooc_d.a for debug version.
+Improve API docs.
+
+0.9.c
+Adding ooc_isClassOf() type checking.
+Bug fix in ooc_finalize().
+Simplification of the copy constructor return values.
+Adding typed Vector.
+Adding typed List.
+Addind List of ListNode objects.
+Test suites: Vector, Signal
+More docs: Vector
+Restructured Exception handling, easier use of exceptions
+More templates for the ooc tool.
+Adding ooc_manage() and ooc_pass() mechanism.
+
+
+0.9.b
+Adding type safe cast, ooc_cast functionality.
+Adding ooc_use and ooc_release functionality.
+

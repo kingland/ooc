@@ -1,0 +1,61 @@
+# Makefile template for ooc unit test suits
+#
+# Requires GNU make version 3.81
+#
+# Your Testfiles must be located in the same directory.
+# The test files MUST end with *test.c, this allows 
+# the Makefile to identify the test files and create 
+# the appropriate targets.
+# The fake files must not end with *.test.c!
+# Because of the linking order, the symbols defined
+# in the fake files will override the same symbols in
+# the testable targets!
+#
+###############################################
+
+SOURCES = $(wildcard *.c)
+EXCLUDE = mplabSIMc32Ext.c
+
+EFFECTIVE_SOURCES = $(filter-out $(EXCLUDE), $(SOURCES))
+TESTS = $(filter $(wildcard *test.c), $(EFFECTIVE_SOURCES))
+FAKES = $(filter-out $(TESTS), $(EFFECTIVE_SOURCES))
+FAKEOBJECTS = $(patsubst %.c, %.o, $(FAKES))
+TARGETS = $(patsubst %.c, %, $(TESTS))
+
+LDOBJECTS = $(FAKEOBJECTS)
+
+CC = gcc 
+LL = gcc
+
+# Eclipse targets
+
+debug : make_targets
+debug : TESTABLE_TARGETS = ../Debug/libxml.a
+debug : CPPFLAGS =
+debug : CFLAGS = -O0 -g3 -fopenmp
+debug : LDFLAGS = -L../Debug -L/usr/local/lib/ooc -fopenmp
+debug : LDLIBS = -lxml -looc_d
+
+release : make_targets
+release : TESTABLE_TARGETS = ../Release/libxml.a
+release : CPPFLAGS =
+release : CFLAGS = -O2 -fopenmp
+release : LDFLAGS = -L../Release -fopenmp
+release : LDLIBS = -lxml -looc
+
+# Building the targets
+
+make_targets : $(TARGETS)
+
+$(TARGETS) : $(FAKEOBJECTS)
+
+%.o : %.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+% : %.o
+	$(LL) $(LDFLAGS) $< $(LDOBJECTS) $(LDLIBS) -o $@
+
+clean :
+	rm -f *.o
+	rm -f $(TARGETS)
+

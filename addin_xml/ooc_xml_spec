@@ -1,0 +1,64 @@
+
+The XML interface for ooc Classes
+
+
+xml_init()
+	Initializes the XML subsystem.
+	Prepares the XML class register for XML reader
+
+xml_register_class( const char * namespace, const char * element_name, Class );
+
+XmlManager xml_manager_new( const char * namespace );
+
+xml_set_output( XmlManager, FILE * )
+	sets the output as a file or pipe
+
+xml_set_output_buffer( XmlManager, char * buffer, size_t length, void (*)(char*, size_t, void*) handler, void * param );
+	sets the output as a buffer
+
+xml_set_indent( XmlManager );
+
+
+xml_write_element_start( XmlManager, const char * element_name );
+
+xml_write_attribute( XmlManager, const char * attribute_name, const char * value );
+xml_write_attribute_int( XmlManager, const char * attribute_name, int );
+xml_write_attribute_unsigned( XmlManager, const char * attribute_name, unsigned int );
+xml_write_attribute_boolean( XmlManager, const char * attribute_name, unsigned int );
+xml_write_attribute_yes_no( XmlManager, const char * attribute_name, unsigned int );
+xml_write_attribute_double( XmlManager, const char * attribute_name, double );
+
+xml_write_text( XmlManager, const char * text );
+
+xml_write_cdata( XmlManager, const char * text );
+
+xml_write_element_end( XmlManager )
+
+
+xml_set_input( XmlManager, FILE * );
+
+xml_set_input_buffer( XmlManager, char * buffer, size_t length, void (*)(char*, size_t, void*) handler, void * param );
+	sets the input as a buffer
+
+Object	xml_read_object( XmlManager );
+
+XmlException
+	buffer_full
+	class_not_registered
+	syntax_error
+	innvalid_attribute_name
+
+XmlInterface
+{
+	write( Object, XmlManager );
+
+	set_attribute( Object, const char * attribute_name, char * value, XmlManager );
+	set_text( Object, const char * text, XmlManager );
+}
+
+xml_set_attribute_to_parent( XmlManager )
+	forwards the set_attribute() request to the parent of the class.
+
+xml_set_text_to_parent( XmlManager )
+	forwards the set_text() request to the parent of the class.
+

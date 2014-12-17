@@ -1,0 +1,73 @@
+
+# Makefile for Microsoft nmake
+#
+# use: > nmake /f Makefile.Windows CONFIG=[config]
+#
+# config can be one of the followings: Debug, Debug_st, Release, Release_st
+#
+##################################################
+
+TESTABLE_PATH = ..\libs
+TESTABLE_LIB = <ADD YOUR TESTABLE LIBRARY HERE, eg. mylib.lib>
+
+TESTS = <LIST YOUR UNIT TESTCASES HERE, eg. mytest.c yourtest.c>
+FAKES = <LIST YOUR FAKE FILES HERE, eg. fake1.c fake2.c>
+
+###################################################
+
+TESTOBJECTS = $(TESTS:.c=.obj)
+FAKEOBJECTS = $(FAKES:.c=.obj)
+TARGETS = $(TESTS:.c=.exe)
+TESTABLE_TARGET = $(TESTABLE_PATH)\$(CONFIG)\$(TESTABLE_LIB)
+
+CC = cl
+LL = cl
+LDOBJECTS = $(FAKEOBJECTS)
+LDLIBS = $(TESTABLE_TARGET) $(OOC_LIB)
+
+!IF "$(CONFIG)" == "Debug_st"
+OOC_LIB = libooc_st_d.lib
+CFLAGS = /DEBUG /D"WIN32" /Od /RTC1 /MDd /W3 /nologo /Zi /TC
+LDFLAGS = /DEBUG /Zi /MDd /nologo
+LINKEROPTIONS = /link /OPT:NOICF /OPT:NOREF
+!ENDIF
+
+!IF "$(CONFIG)" == "Debug"
+OOC_LIB = libooc_d.lib
+CFLAGS = /DEBUG /D"WIN32" /Od /RTC1 /MDd /W3 /nologo /Zi /TC /openmp
+LDFLAGS = /DEBUG /Zi /MDd /openmp /nologo
+LINKEROPTIONS = /link /OPT:NOICF /OPT:NOREF
+!ENDIF
+
+!IF "$(CONFIG)" == "Release_st"
+OOC_LIB = libooc_st.lib
+CFLAGS = /D"WIN32" /DNDEBUG /O2 /MD /W3 /nologo /TC
+LDFLAGS = /DNDEBUG /MD /nologo
+LINKEROPTIONS = /link
+!ENDIF
+
+!IF "$(CONFIG)" == "Release"
+OOC_LIB = libooc.lib
+CFLAGS = /D"WIN32" /DNDEBUG /O2 /MD /W3 /nologo /TC /openmp
+LDFLAGS = /DNDEBUG /MD /openmp /nologo
+LINKEROPTIONS = /link
+!ENDIF
+
+all : $(TARGETS)
+
+$(TARGETS) : objects  $(TESTABLE_TARGET)
+
+objects : $(TESTOBJECTS) $(FAKEOBJECTS)
+	
+.c.obj:
+	$(CC) $(CFLAGS) /Fd$* /c $<
+	
+.obj.exe:
+	$(LL) $(LDFLAGS) $< $(LDOBJECTS) $(LDLIBS) $(LINKEROPTIONS)
+
+clean :
+	del *.obj
+	del *.exe
+	del *.?db
+	del *.manifest
+	
