@@ -1,0 +1,89 @@
+Object Oriented C (ooc) kit is for those who want to program in an object orieneted
+manner, but want to stick on the good old C as well.
+ooc is lightweight but yet powerfull, uses only ANSI-C, thus highly portable.
+ooc implements classes, single inheritance, exception handling.
+The primary audience could be students who want to understand the very basics of
+object oriented programming and for developers writing applications for platforms that
+lack C++ or other object oriented languages.
+
+There are other object oriented C aproaches out there you might be interested in
+(for example GObject), however ooc is easy to use, and in addition supports the
+use of exceptions.
+
+ooc helps you make unit testing easier with a special TestCase class.
+
+Install on Linux/Unix:
+======================
+
+The usual:
+	./configure
+	make all pdf html
+	make check
+	sudo make install install-pdf install-html
+
+Read the tutorials, (usually) installed here:
+	usr/local/share/doc/ooc/ooc.html/index.html or
+	usr/local/share/doc/ooc/ooc.pdf
+
+The API doc can be found (usually) here:
+	usr/local/share/doc/ooc/api/html/index.html
+
+Use the ooc tool:
+	ooc --help
+
+Compile your own code:
+	gcc `pkg-config --cflags --libs ooc' my_program.c
+
+Install on Windows or other platforms:
+======================================
+
+1. Install with the Windows installer
+
+Download the Windows installer package: ooc_win32.msi and install it.
+This installer will install the occ files that are necessary for program development with ooc.
+It installs the header files, libraries, documentation and the ooc tool.
+Also sets the LIB, INCLUDE and PATH environment variables.
+Check the Start menu -> All Programs for the ooc folder.
+
+2. Build from scratch
+
+Or alternatively you can compile from source code:
+
+Make sure, you have installed:
+	Visual C++ 2008 Express
+	glib for win32
+	(ftp://ftp.gnome.org/pub/GNOME/binaries/win32/glib/)
+
+Copy the source files in a project directory,
+then open the ooc.sln file with VC++.
+
+You can build ooc now.
+(You might need to modify the property sheets in the tools projetc, according
+to your glib installation.)
+
+An other possibility to copy the source files into your project directory
+compile and link them together with your project.
+For the ooc core functions (class and object management, exception handling) copy:
+	ooc.h
+	ooc.c
+	exception.h
+	exception.c
+	implement/exception.h
+
+If you'd like to use the other stuff as well, copy the rest.
+
+Install for the MPLAB IDE:
+======================================
+
+The MPLAB C18 and C30 compiler support is included in the Windows installer.
+Install the Windows installer as described above!
+
+Install on other platforms:
+======================================
+Not ready yet.
+
+======================================
+
+Have fun!
+
+
